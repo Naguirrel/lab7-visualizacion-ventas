@@ -178,7 +178,7 @@ Para saber si los clientes VIP prefieren comprar en tienda física u online, ya 
 
 **Visualización:** Row Chart - porque permite comparar dos dimensiones simultáneas (canal y segmento) de forma compacta y clara.
 
-![kpi8-segmento-por-canal](images/kpi8-segmento-por-canal)
+![kpi8-segmento-por-canal](images/kpi8-segmento-por-canal.png)
 
 **Consulta SQL:**
 ```sql
@@ -222,6 +222,7 @@ WHERE p.estado = 'completado'
 GROUP BY mes, c.segmento
 ORDER BY mes, c.segmento;
 ```
+---
 
 #### KPI 4 — Ticket Promedio por Segmento de Cliente
 
