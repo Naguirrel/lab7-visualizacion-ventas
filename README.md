@@ -145,6 +145,84 @@ LIMIT 10;
 
 ---
 
+#### KPI 1 — Clientes activos por mes
+
+**Qué representa:**  
+La cantidad de clientes que completaron al menos una compra en el mes más reciente, comparado con el mesa anterior.
+**Importancia para el área:**  
+Permite que la empresa pueda monitorear que la cantidad de clientes generando transacciones esté creciendo, puesto que la caida de los clientes podria ayudar a identificar de forma temprana algún problema que más adelante pueda afectar los ingresos.
+**Visualización:** Trend (Big Number) — permite ver de un vistazo la métrica más crítica del tab con contexto del mes anterior.
+
+![KPI 7 - Kpi7-clientes-mes](images/kpi7-clientes-mes.png)
+
+**Consulta SQL:**
+```sql
+SELECT 
+DATE_TRUNC('month', p.fecha) as mes,
+SUM(DISTINCT p.id_cliente) as clientes_activos
+FROM pedido p
+WHERE p.estado = 'completado'
+GROUP BY mes
+ORDER BY mes;
+```
+
+---
+
+#### KPI 2 — Segmento de Cliente por Canal
+
+**Qué representa:**  
+Cuántos clientes de cada segmento (VIP, regular, nuevo) compran en cada canal, mostrando si el perfil del cliente varía según el canal de compra.
+
+**Importancia para el área:**  
+Para saber si los clientes VIP prefieren comprar en tienda física u online, ya que eso puede ser útil para definir dónde enfocar promociones, atención personalizada y recursos comerciales por canal.
+
+**Visualización:** Row Chart - porque permite comparar dos dimensiones simultáneas (canal y segmento) de forma compacta y clara.
+
+![kpi8-segmento-por-canal](images/kpi8-segmento-por-canal)
+
+**Consulta SQL:**
+```sql
+SELECT
+c.segmento, 
+p.canal,
+COUNT(DISTINCT p.id_cliente) AS clientes
+FROM pedido p 
+JOIN cliente c ON c.id_cliente = p.id_cliente
+WHERE p.estado = 'completado'
+GROUP BY p.canal, c.segmento
+ORDER BY p.canal, clientes;
+```
+
+---
+
+#### KPI 3 — ARPU mensual por segmento
+
+**Qué representa:**  
+El ingreso promedio generado por cada cliente activo en un mes, desglosado por segmento (VIP, regular, nuevo).
+
+**Importancia para el área:**  
+Permite que se pueda conocer cuánto de ingreso nos genera cada tipo de cliente mensualmente para priorizar esfuerzos comerciales y detectar si algún segmento está perdiendo valor a lo largo del tiempo.
+
+**Visualización:** Line Chart — porque es la mejor opción para comparar la evolución mensual de múltiples segmentos simultáneamente en el tiempo.
+
+![KPI 9 - ARPU mensual por segmento](images/kpi9-arpu-mensual.png)
+
+**Consulta SQL:**
+```sql
+SELECT 
+DATE_TRUNC('month', p.fecha) AS mes,
+c.segmento,
+ROUND(
+SUM(dp.cantidad * dp.precio_unitario *(1- (dp.descuento/100))) / COUNT(DISTINCT p.id_cliente), 2
+) AS arpu
+FROM pedido p 
+JOIN detalle_pedido dp ON p.id_pedido = dp.id_pedido
+JOIN cliente c ON p.id_cliente = c.id_cliente
+WHERE p.estado = 'completado'
+GROUP BY mes, c.segmento
+ORDER BY mes, c.segmento;
+```
+
 #### KPI 4 — Ticket Promedio por Segmento de Cliente
 
 **Qué representa:**  
