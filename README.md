@@ -141,6 +141,92 @@ LIMIT 10;
 
 ---
 
+#### KPI 4 — Valor Promedio por Venta
+
+**Qué representa:**  
+Valor promedio generado por cada pedido completado. Este indicador calcula primero el total de cada venta y luego obtiene el promedio general de todas las ventas completadas.
+
+**Importancia para el área:**  
+Permite conocer cuánto ingresa la empresa, en promedio, por cada transacción. Esto ayuda a evaluar si las estrategias comerciales están aumentando el valor de compra de los clientes y no solo la cantidad de ventas.
+
+**Visualización:** Big Number — permite visualizar rápidamente un valor promedio clave para medir el rendimiento comercial de cada venta.
+
+![KPI 4 - Valor Promedio por Venta](images/kpi10-valor-promedio-por venta.png)
+
+**Consulta SQL:**
+```sql
+SELECT 
+    ROUND(AVG(total_venta), 2) AS valor_promedio_por_venta
+FROM (
+    SELECT 
+        p.id_pedido,
+        SUM(dp.cantidad * dp.precio_unitario * (1 - dp.descuento / 100.0)) AS total_venta
+    FROM pedido p
+    JOIN detalle_pedido dp 
+        ON p.id_pedido = dp.id_pedido
+    WHERE p.estado = 'completado'
+    GROUP BY p.id_pedido
+) ventas_por_pedido;
+```
+
+---
+
+#### KPI 5 — Volumen de Pedidos Mensual
+
+**Qué representa:**  
+Cantidad de pedidos completados por cada mes. A diferencia del indicador de ventas por mes, este KPI no mide ingresos, sino el número de transacciones realizadas.
+
+**Importancia para el área:**  
+Permite analizar si el movimiento comercial aumenta o disminuye a lo largo del tiempo. También ayuda a interpretar si los ingresos crecen porque hay más pedidos o porque cada venta tiene un valor promedio más alto.
+
+**Visualización:** Line Chart — ideal para observar la evolución mensual del volumen de pedidos e identificar tendencias, aumentos o caídas en la actividad comercial.
+
+![KPI 5 - Volumen de Pedidos Mensual](images/kpi11-volumen-pedidos-mensual.png)
+
+**Consulta SQL:**
+```sql
+SELECT 
+    DATE_TRUNC('month', p.fecha) AS mes,
+    COUNT(p.id_pedido) AS total_pedidos
+FROM pedido p
+WHERE p.estado = 'completado'
+GROUP BY DATE_TRUNC('month', p.fecha)
+ORDER BY mes;
+```
+
+---
+
+#### KPI 6 — Ventas por Categoría de Producto
+
+**Qué representa:**  
+Ingresos generados por cada categoría de producto dentro de los pedidos completados.
+
+**Importancia para el área:**  
+Permite identificar qué categorías generan más ingresos para la empresa. Esta información ayuda a priorizar inventario, promociones y estrategias comerciales según las categorías con mejor desempeño.
+
+**Visualización:** Bar Chart — facilita comparar visualmente el rendimiento de cada categoría de producto y reconocer cuáles aportan más ingresos.
+
+![KPI 6 - Ventas por Categoría de Producto](images/kpi12-ventas-categoria-producto.png)
+
+**Consulta SQL:**
+```sql
+SELECT
+    c.nombre AS categoria,
+    ROUND(SUM(dp.cantidad * dp.precio_unitario * (1 - dp.descuento / 100.0)), 2) AS ingresos
+FROM pedido p
+JOIN detalle_pedido dp 
+    ON p.id_pedido = dp.id_pedido
+JOIN producto pr 
+    ON dp.id_producto = pr.id_producto
+JOIN categoria c
+    ON pr.id_categoria = c.id_categoria
+WHERE p.estado = 'completado'
+GROUP BY c.nombre
+ORDER BY ingresos DESC;
+```
+
+---
+
 ### Tab 2 — Análisis de Clientes y Canales
 
 ---
