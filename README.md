@@ -151,7 +151,7 @@ Permite conocer cuánto ingresa la empresa, en promedio, por cada transacción. 
 
 **Visualización:** Big Number — permite visualizar rápidamente un valor promedio clave para medir el rendimiento comercial de cada venta.
 
-![KPI 4 - Valor Promedio por Venta](images/kpi10-valor-promedio-por venta.png)
+![KPI 4 - Valor Promedio por Venta](images/kpi4-promedio-venta.png)
 
 **Consulta SQL:**
 ```sql
@@ -181,7 +181,7 @@ Permite analizar si el movimiento comercial aumenta o disminuye a lo largo del t
 
 **Visualización:** Line Chart — ideal para observar la evolución mensual del volumen de pedidos e identificar tendencias, aumentos o caídas en la actividad comercial.
 
-![KPI 5 - Volumen de Pedidos Mensual](images/kpi11-volumen-pedidos-mensual.png)
+![KPI 5 - Volumen de Pedidos Mensual](images/kpi5-pedidos-mensuales.png)
 
 **Consulta SQL:**
 ```sql
@@ -206,7 +206,7 @@ Permite identificar qué categorías generan más ingresos para la empresa. Esta
 
 **Visualización:** Bar Chart — facilita comparar visualmente el rendimiento de cada categoría de producto y reconocer cuáles aportan más ingresos.
 
-![KPI 6 - Ventas por Categoría de Producto](images/kpi12-ventas-categoria-producto.png)
+![KPI 6 - Ventas por Categoría de Producto](images/kpi6-ventas-categoria.png)
 
 **Consulta SQL:**
 ```sql
@@ -245,7 +245,7 @@ Permite que la empresa pueda monitorear que la cantidad de clientes generando tr
 ```sql
 SELECT 
 DATE_TRUNC('month', p.fecha) as mes,
-SUM(DISTINCT p.id_cliente) as clientes_activos
+COUNT(DISTINCT p.id_cliente) as clientes_activos
 FROM pedido p
 WHERE p.estado = 'completado'
 GROUP BY mes
@@ -320,7 +320,7 @@ Permite identificar cuánto gasta en promedio cada tipo de cliente y priorizar e
 
 **Visualización:** Bar Chart — ideal para comparar valores discretos entre categorías.
 
-![KPI 4 - Ticket Promedio por Segmento](images/kpi4-ticket-segmento.png)
+![KPI 4 - Ticket Promedio por Segmento](images/kpi10-ticket-promedio.png)
 
 **Consulta SQL:**
 ```sql
@@ -356,7 +356,7 @@ Permite detectar estacionalidad, tendencias de aceleración o desaceleración, y
 
 **Visualización:** Line Chart — muestra la evolución temporal; el % de crecimiento añade una segunda dimensión de análisis sobre el mismo gráfico.
 
-![KPI 5 - Tendencia MoM](images/kpi5-tendencia-mom.png)
+![KPI 5 - Tendencia MoM](images/kpi11-tendencia-mom.png)
 
 **Consulta SQL:**
 ```sql
@@ -395,7 +395,7 @@ Informa decisiones de inversión entre canales: si el canal online crece, hay ar
 
 **Visualización:** Pie/Donut Chart — comunica composición proporcional de forma visual e inmediata.
 
-![KPI 6 - Participación por Canal](images/kpi6-canal-venta.png)
+![KPI 6 - Participación por Canal](images/kpi12-canal-venta.png)
 
 **Consulta SQL:**
 ```sql
